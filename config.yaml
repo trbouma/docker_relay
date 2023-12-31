@@ -1,0 +1,43 @@
+DEBUG: false
+
+relay_name: python relay
+relay_description: relay written in python
+sysop_pubkey: 
+sysop_contact: 
+
+storage:
+  # sqlalchemy.url: sqlite+aiosqlite:///nostr.sqlite3
+  sqlalchemy.url: postgresql+asyncpg://postgres:#####@abctel.co:6432/nostr
+  # the number of concurrent REQ queries sent to the db
+  num_concurrent_reqs: 10
+  # the number of concurrent event saves. (sqlite can only support 1 writer at a time)
+  num_concurrent_adds: 2
+  validators:
+    - nostr_relay.validators.is_not_too_large
+    - nostr_relay.validators.is_signed
+    - nostr_relay.validators.is_recent
+    - nostr_relay.validators.is_not_hellthread
+
+verification:
+  # options are disabled, passive, enabled
+  nip05_verification: disabled
+  expiration: 86400 * 30
+  update_frequency: 3600
+  #blacklist:
+  # - badhost.biz
+  #whitelist:
+  # - goodhost.com
+
+
+gunicorn:
+  bind: 0.0.0.0:6969
+  workers: 1
+  loglevel: info
+  reload: false
+
+
+purple:
+  host: 0.0.0.0
+  port: 6969
+  workers: 1
+  disable_compression: true
